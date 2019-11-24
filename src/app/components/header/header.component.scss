@@ -1,0 +1,9 @@
+@import '../../../assets/scss/variables.scss';
+.header{
+    width:100%;
+    background: $main-color;
+    color: white;
+}
+.spacer{
+    flex: 1 1 auto;
+}

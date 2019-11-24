@@ -1,0 +1,241 @@
+import { Injectable } from '@angular/core';
+import { fromEvent, merge } from 'rxjs';
+import { timeInterval, tap, filter } from 'rxjs/operators';
+import { Router, NavigationEnd, NavigationStart } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class LoggerService {
+
+  constructor(private router: Router, private http:HttpClient) { }
+  private info = {};
+  private geoApiUrl = 'http://geoapi-test-geoapi.apps.us-east-2.starter.openshift-online.com/';
+  // private timingHandler;
+  // private navigationHandler;
+  // private intervalCount = 0;
+  // private routeCountAvg = {};
+  // private routeCount = {};
+  refreshData() {
+    let that = this;
+    this.getPublicIP();
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function (position) {
+        that.info['locationData'] = position;
+      }, function () {
+        that.info['locationData'] = 'Not available'
+      });
+    } else {
+      // Browser doesn't support Geolocation
+      that.info['locationData'] = 'Not available'
+      console.log('position not available');
+    }
+
+    this.info['timeOpened'] = new Date();
+    var split = new Date().toString().split(" ");
+    this.info['timezone'] = split[split.length - 2] + " " + split[split.length - 1];
+    this.info['referrer'] = document.referrer;
+    this.info['browserName'] = this.getBrowser();
+    this.info['browserEngine'] = navigator.product;
+    this.info['browserVersion1a'] = navigator.appVersion;
+    this.info['browserVersion1b'] = navigator.userAgent;
+    this.info['browserLanguage'] = navigator.language;
+    this.info['browserOnline'] = navigator.onLine;
+    this.info['javaEnabled'] = navigator.javaEnabled();
+    this.info['cookieEnabled'] = navigator.cookieEnabled;
+    this.info['cookies'] = document.cookie;
+    this.info['localStorage'] = localStorage;
+    this.info['sessionStorage'] = sessionStorage;
+
+    var findIP = new Promise(r => { var w = window, a = new (w['RTCPeerConnection'] || w['mozRTCPeerConnection'] || w['webkitRTCPeerConnection'])({ iceServers: [] }), b = () => { }; a.createDataChannel(""); a.createOffer(c => a.setLocalDescription(c, b, b), b); a.onicecandidate = c => { try { c.candidate.candidate.match(/([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/g).forEach(r) } catch (e) { } } })
+    /*Usage example*/
+    findIP.then(ip => that.info['localip'] = JSON.stringify(ip)).catch(e => console.error(e));
+
+  }
+  getInfo() {
+    return this.info;
+  }
+
+
+  private getBrowser() {
+
+    // Firefox 1.0+
+    var isFirefox = this.isFirefox();
+
+    // Safari 3.0+ "[object HTMLElementConstructor]" 
+    var isSafari = this.isSafari();
+
+    // Internet Explorer 6-11
+    var isIE = this.isIE();
+
+    // Edge 20+
+    var isEdge = !isIE && !!window['StyleMedia'];
+
+    // Chrome 1 - 71
+    var isChrome = !!window['chrome'] && (!!window['chrome'].webstore || !!window['chrome'].runtime);
+
+    // Blink engine detection
+    var isBlink = (isChrome || isOpera) && !!window['CSS'];
+
+    //Opera
+    var isOpera = this.isOpera();
+
+    if (isOpera)
+      return 'Opera';
+    if (isFirefox)
+      return 'Firefox';
+    if (isSafari)
+      return 'Safari 3.0+';
+    if (isIE)
+      return 'Internet Explorer 6-11';
+    if (isEdge)
+      return 'Edge 20+';
+    if (isChrome)
+      return 'Chrome';
+    if (isBlink)
+      return 'Blink';
+  }
+  private isOpera(): boolean {
+    return (!!window['opr'] && !!window['opr'].addons) || !!window['opera'] || navigator.userAgent.indexOf(' OPR/') >= 0;
+  }
+
+  private isFirefox(): boolean {
+    //noinspection TypeScriptUnresolvedVariable
+    return ("InstallTrigger" in window) || typeof window['InstallTrigger'] !== 'undefined';
+  }
+
+  private isSafari(): boolean {
+    return /constructor/i.test(String(window['HTMLElement'])) || ((p): boolean => {
+      return p.toString() === "[object SafariRemoteNotification]";
+    })(!window['safari'] || window['safari'].pushNotification);
+  }
+
+  private isIE(): boolean {
+    return /*@cc_on!@*/false || !!window.document['documentMode'];
+  }
+
+  logLoadTime() {
+    this.info['apploadTime'] = (Date.now() - window['timerStart']) / 1000;
+  }
+
+  registerTimer() {
+
+    const events = [
+      'click',
+      'scroll',
+      'keyup',
+      'wheel',
+      'mousemove'
+    ];
+    const eventStreams = events.map((ev) => fromEvent(document, ev));
+    const allEvents$ = merge(...eventStreams);
+    let that = this;
+    allEvents$
+      .pipe(
+        timeInterval(),
+        filter(i => i.interval > 1000)
+      )
+      .subscribe(
+        i => {
+          that.logIdleTime(i.interval / 1000);
+        }
+      );
+
+    //Time on a route
+
+    this.router.events.pipe(
+      filter(ev => ev instanceof NavigationStart),
+      timeInterval()
+    )
+      .subscribe(
+        i => {
+          that.logRouteChange(i);
+          this.log('route');
+        }
+      );
+    this.router.events.subscribe(route => {
+      if (route instanceof NavigationStart) {
+        this.info['lastRouteChange'] = { from: this.router.url, to: route.url };
+      }
+    })
+  }
+
+  logIdleTime(interval) {
+    let currentPath = this.router.url;
+    this.info['lastIdleTime'] = {
+      'route': currentPath,
+      'time': interval
+    }
+    // let routeIntervalCount = this.routeCountAvg[currentPath] ? this.routeCountAvg[currentPath] : 0;
+    // if (!this.info['averageRouteIdleTime'])
+    //   this.info['averageRouteIdleTime'] = {};
+    // //idle time logger
+    // this.info['averageIdleTime'] = ((this.info['averageIdleTime'] || 1) * this.intervalCount + interval) / (++this.intervalCount);
+    // this.info['averageRouteIdleTime'][currentPath] = ((this.info['averageRouteIdleTime'][currentPath] || 1) * routeIntervalCount + interval) / (routeIntervalCount + 1);
+    // this.routeCountAvg[currentPath] = this.routeCountAvg[currentPath] ? this.routeCountAvg[currentPath] + 1 : 1;
+  }
+  logRouteChange(event) {
+    let currentPath = this.router.url;
+    let interval = event.interval / 1000;
+    this.info['lastTimeSpentOnRoute'] = {
+      'route': currentPath,
+      'time': interval
+    }
+    // let routeIntervalCount = this.routeCount[currentPath] ? this.routeCount[currentPath] : 0;
+    // if (!this.info['averageRouteTime'])
+    //   this.info['averageRouteTime'] = {};
+    // this.info['averageRouteTime'][currentPath] = ((this.info['averageRouteTime'][currentPath] || 1) * routeIntervalCount + interval) / (routeIntervalCount + 1);
+    // this.routeCount[currentPath] = this.routeCount[currentPath] ? this.routeCount[currentPath] + 1 : 1;
+  }
+
+  logClick(el) {
+    let currentPath = this.router.url;
+    let labelName = el.label;
+    if (el.nocount) {
+      if (!this.info['clickOnRoute'])
+        this.info['clickOnRoute'] = {};
+      if (!this.info['clickOnRoute'][currentPath])
+        this.info['clickOnRoute'][currentPath] = {};
+      this.info['clickOnRoute'][currentPath][labelName] = this.info['clickOnRoute'][currentPath][labelName] ? this.info['clickOnRoute'][currentPath][labelName] : 0;
+    }
+    else {
+      if (!this.info['clickOnRoute'])
+        this.info['clickOnRoute'] = {};
+      if (!this.info['clickOnRoute'][currentPath])
+        this.info['clickOnRoute'][currentPath] = {};
+      this.info['clickOnRoute'][currentPath][labelName] = (this.info['clickOnRoute'][currentPath][labelName] ? this.info['clickOnRoute'][currentPath][labelName] : 0) + 1;
+      this.info['lastClick'] = el;
+      this.log('click');
+    }
+  }
+
+  logHover(el) {
+    this.info['lastHover'] = el;
+    this.log('hover');
+  }
+
+  log(type='default') {
+    this.info['latestPerformanceObj'] = window.performance.toJSON().timing;
+    console.log(type,this.info);
+  }
+
+
+  //API Calls
+
+  getPublicIP(){
+    this.http.get(this.geoApiUrl, {responseType: 'json'}).subscribe((res:any) => {
+      if(res.data){
+        this.info['publicIp'] = res.data.ip;
+        this.info['ipbasedLocationData'] = {
+          'city': res.data.location.city,
+          'country': res.data.location.country,
+          'latlong': res.data.location.ll,
+          'accuracy': res.data.location.area
+        }
+      }
+    }, (error:any)=>{
+      console.log('GEOIP failed');
+    })
+  }
+}
