@@ -1,6 +1,10 @@
+@import '../assets/scss/variables.scss';
 .side-nav{
     width:3%;
     transition: width 0.2s linear;
+    @media screen and (max-width: $break-small) {
+      width:0%;
+    }
 }
 .side-nav.navopen{
     width:18%;
