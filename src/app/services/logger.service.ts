@@ -47,7 +47,10 @@ export class LoggerService {
     this.info['cookies'] = document.cookie;
     this.info['localStorage'] = localStorage;
     this.info['sessionStorage'] = sessionStorage;
-
+    this.info['device'] = this.isMobile()?'mobile':'desktop';
+    this.info['resolution'] = window.screen.width * window.devicePixelRatio + "x" + window.screen.height * window.devicePixelRatio;
+    this.info['operatingSystem'] = this.isMobile()?this.getMobileOperatingSystem():navigator.platform;
+    // alert('device:'+this.info['device']+',os:'+this.info['operatingSystem'] + ',resolution:'+this.info['resolution']);
     var findIP = new Promise(r => { var w = window, a = new (w['RTCPeerConnection'] || w['mozRTCPeerConnection'] || w['webkitRTCPeerConnection'])({ iceServers: [] }), b = () => { }; a.createDataChannel(""); a.createOffer(c => a.setLocalDescription(c, b, b), b); a.onicecandidate = c => { try { c.candidate.candidate.match(/([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/g).forEach(r) } catch (e) { } } })
     /*Usage example*/
     findIP.then(ip => that.info['localip'] = JSON.stringify(ip)).catch(e => console.error(e));
@@ -63,7 +66,7 @@ export class LoggerService {
     // Firefox 1.0+
     var isFirefox = this.isFirefox();
 
-    // Safari 3.0+ "[object HTMLElementConstructor]" 
+    // Safari 3.0+ "[object HTMLElementConstructor]"
     var isSafari = this.isSafari();
 
     // Internet Explorer 6-11
@@ -115,6 +118,32 @@ export class LoggerService {
     return /*@cc_on!@*/false || !!window.document['documentMode'];
   }
 
+  getMobileOperatingSystem() {
+  var userAgent = navigator.userAgent || navigator.vendor || window['opera'];
+
+      // Windows Phone must come first because its UA also contains "Android"
+    if (/windows phone/i.test(userAgent)) {
+        return "Windows Phone";
+    }
+
+    if (/android/i.test(userAgent)) {
+        return "Android";
+    }
+
+    // iOS detection from: http://stackoverflow.com/a/9039885/177710
+    if (/iPad|iPhone|iPod/.test(userAgent) && !window['MSStream']) {
+        return "iOS";
+    }
+
+    return "unknown";
+}
+
+  isMobile(){
+    let userAgent = navigator.userAgent||navigator.vendor||window['opera'];
+    if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(userAgent))
+      return true;
+    return false;
+  }
   logLoadTime() {
     this.info['apploadTime'] = (Date.now() - window['timerStart']) / 1000;
   }
