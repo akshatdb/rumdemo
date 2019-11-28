@@ -9,7 +9,7 @@
 .side-nav.navopen{
     width:400px;
     @media screen and (max-width: $break-small) {
-      width:100%;
+      width:60px;
     }
 }
 .main-content{
@@ -25,8 +25,7 @@
 .main-content.main-shrunk{
     width:calc(100% - 400px);
     @media screen and (max-width: $break-small) {
-      opacity: 0;
-      display: none;
+      width: calc(100% - 60px);
     }
 }
 .main-div{
