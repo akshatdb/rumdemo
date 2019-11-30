@@ -1,1 +1,70 @@
 <app-data-table [tableModel]="tableModel"></app-data-table>
+<mat-divider class="mt-2 mb-2"></mat-divider>
+<mat-card-content class="mt-4">
+    <form [formGroup]="form">
+        <div class="row">
+            <div *ngFor="let field of formfields" class="col-md-{{field.width}} fadeup">
+                <ng-container [ngSwitch]="field.type">
+                    <ng-container *ngSwitchCase="'input'">
+                        <mat-form-field appearance="outline" class="form-field">
+                            <mat-label>{{field.label}}</mat-label>
+                            <input matInput [formControlName]="field.name">
+                        </mat-form-field>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'textarea'">
+                        <mat-form-field appearance="outline" class="form-field">
+                            <mat-label>{{field.label}}</mat-label>
+                            <textarea matInput [formControlName]="field.name"></textarea>
+                        </mat-form-field>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'dropdown'">
+                        <mat-form-field appearance="outline" class="form-field">
+                            <mat-label>{{field.label}}</mat-label>
+                            <mat-select [formControlName]="field.name">
+                                <mat-option *ngFor="let el of field.list" [value]="el[field.valfield]">
+                                    {{el[field.namefield]}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'datepicker'">
+                        <mat-form-field appearance="outline" class="form-field">
+                            <input matInput [matDatepicker]="picker" readonly placeholder="{{field.label}}"
+                                [formControlName]="field.name">
+                            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                            <mat-datepicker #picker></mat-datepicker>
+                        </mat-form-field>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'toggle'">
+                        <mat-slide-toggle [formControlName]="field.name">
+                            {{form.controls[field.name].value?field.activeval:field.inactiveval}}</mat-slide-toggle>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'radiogroup'">
+                        <div class="radio-group">
+                            <mat-radio-group aria-label="Select an option" [formControlName]="field.name">
+                                <mat-radio-button color="primary" *ngFor="let el of field.list" [value]="el[field.valfield]">
+                                    {{el[field.namefield]}}</mat-radio-button>
+                            </mat-radio-group>
+                        </div>
+                    </ng-container>
+                    <!-- <ng-container *ngSwitchCase="'checkbox'">
+                        <mat-form-field appearance="outline" class="form-field">
+                            <mat-label>{{field.label}}</mat-label>
+                            <input matInput [formControlName]="field.name">
+                        </mat-form-field>
+                    </ng-container> -->
+                </ng-container>
+            </div>
+        </div>
+    </form>
+</mat-card-content>
+<mat-card-actions>
+    <div class="btns text-right" >
+        {{disableState}}
+        <button mat-raised-button color="primary" (click)="form.valid?onSave(form.value):form.markAllAsTouched()">
+            <mat-icon>save</mat-icon> Save
+        </button>
+        <button mat-raised-button color="warn" (click)="form.reset">
+            <mat-icon>restore</mat-icon> Reset
+        </button>
+    </div>
+</mat-card-actions>

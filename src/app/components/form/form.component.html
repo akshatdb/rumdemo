@@ -58,10 +58,10 @@
 <mat-card-actions>
     <div class="btns text-right" >
         {{disableState}}
-        <button mat-raised-button color="primary"(click)="form.valid?onSave(form.value):form.markAllAsTouched()">
+        <button mat-raised-button color="primary" logThis (click)="form.valid?onSave(form.value):form.markAllAsTouched()">
             <mat-icon>save</mat-icon> Save
         </button>
-        <button mat-raised-button color="warn" (click)="form.reset">
+        <button mat-raised-button color="warn" logThis (click)="form.reset">
             <mat-icon>restore</mat-icon> Reset
         </button>
     </div>
