@@ -8,15 +8,16 @@ import { TableComponent } from './components/table/table.component';
 const routes: Routes = [
   {
     path: '',
+    redirectTo: 'home',
+    pathMatch: 'full'
+  },
+  {
+    path: 'home',
     component: HomeComponent,
     data: {
       'title': 'Home',
       'icon': 'home'
     }
-  },
-  {
-    path: 'home',
-    redirectTo: ''
   },
   {
     path: 'form',
