@@ -1,21 +1,33 @@
-import { trigger, transition, style, query, animateChild, group, animate, sequence, stagger } from '@angular/animations';
+import { trigger, transition, style, query, animateChild, group, animate, sequence, stagger, state } from '@angular/animations';
 
-export const fadeUp =
-    trigger('fadeUp', [
-        transition('* <=> *', [
-            sequence([
-                query('.fadeup', [
-                    style({
-                        opacity: '0.0',
-                        transform: 'translate(0px, 20px)'
-                    }),
-                    stagger(100, [
-                        animate('0.4s 0s ease-in', style({
-                            opacity: '1',
-                            transform: 'translate(0px, 0px)'
-                        })),
-                    ])
-                ], { optional: true }),
-            ])
+export const slideInOut =
+    trigger('slideInOut', [
+        state('open', style({
+            opacity: '1.0',
+            transform: 'scale(1)'
+        })),
+        state('close', style({
+            opacity: '0.0',
+            transform: 'scale(0.8)'
+        })),
+        transition('close => open', [
+            style({
+                opacity: '0.0',
+                transform: 'scale(0.8)'
+            }),
+            animate('0.1s 0s ease-in', style({
+                opacity: '1',
+                transform: 'scale(1)'
+            }))
         ]),
+        transition('open => close', [
+            style({
+                opacity: '1.0',
+                transform: 'scale(1)'
+            }),
+            animate('0.1s 0s ease-in', style({
+                opacity: '0.0',
+                transform: 'scale(0.8)'
+            }))
+        ])
     ]);

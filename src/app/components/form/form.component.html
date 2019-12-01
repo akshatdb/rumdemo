@@ -6,13 +6,13 @@
                     <ng-container *ngSwitchCase="'input'">
                         <mat-form-field appearance="outline" class="form-field">
                             <mat-label>{{field.label}}</mat-label>
-                            <input matInput [formControlName]="field.name" logThis>
+                            <input matInput [formControlName]="field.name" appForbiddenChar logThis>
                         </mat-form-field>
                     </ng-container>
                     <ng-container *ngSwitchCase="'textarea'">
                         <mat-form-field appearance="outline" class="form-field">
                             <mat-label>{{field.label}}</mat-label>
-                            <textarea matInput [formControlName]="field.name" logThis></textarea>
+                            <textarea matInput [formControlName]="field.name" appForbiddenChar logThis></textarea>
                         </mat-form-field>
                     </ng-container>
                     <ng-container *ngSwitchCase="'dropdown'">

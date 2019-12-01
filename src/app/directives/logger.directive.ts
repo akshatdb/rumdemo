@@ -3,7 +3,7 @@ import { LoggerService } from '../services/logger.service';
 import { Router } from '@angular/router';
 
 @Directive({
-    selector: '[logThis]'
+    selector: '[matInput], [mat-icon-button]'
 })
 
 export class LogDirective {

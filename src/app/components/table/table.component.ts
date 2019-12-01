@@ -63,42 +63,42 @@ export class TableComponent implements OnInit {
 
 
   //GLOBAL LISTENER CODE STARTS HERE
-  @HostListener('click', ['$event'])
-  onclick(evt) {
-    if (this.applyFilter(evt.target)) {
-      let label = this.getLabel(evt.target);
-      this.logger.logClick({ label: label, type: evt.target.tagName });
-    }
-  }
-  getLabel(evt) {
-    // console.log(evt);
-    return 'boolean';
-  }
-  includeList = ['mat-button', 'mat-input'];
-  applyFilter(element) {
-    if (this.checkClassList(element.className, this.includeList))
-      return true;
-    return false;
-  }
-  private checkClassList(classList, includeList) {
-    let flag = false;
-    includeList.forEach(className => {
-      if (classList.indexOf(className) !== -1)
-        flag = true;
-    });
-    return flag;
-  }
-  timer;
-  @HostListener('mouseenter', ['$event'])
-  mouseenter(evt) {
-    this.timer = Date.now();
-  }
-  timeOutConst = 1;
-  @HostListener('mouseleave', ['$event'])
-  mouseleave(evt) {
-    let label = this.getLabel(evt.target);
-    if (((Date.now() - this.timer) / 1000) > this.timeOutConst)
-      this.logger.logHover({ route: this.router.url, hoverTime: ((Date.now() - this.timer) / 1000), label: label, type: evt.target.tagName });
-  }
+  // @HostListener('click', ['$event'])
+  // onclick(evt) {
+  //   if (this.applyFilter(evt.target)) {
+  //     let label = this.getLabel(evt.target);
+  //     this.logger.logClick({ label: label, type: evt.target.tagName });
+  //   }
+  // }
+  // getLabel(evt) {
+  //   // console.log(evt);
+  //   return 'boolean';
+  // }
+  // includeList = ['mat-button', 'mat-input'];
+  // applyFilter(element) {
+  //   if (this.checkClassList(element.className, this.includeList))
+  //     return true;
+  //   return false;
+  // }
+  // private checkClassList(classList, includeList) {
+  //   let flag = false;
+  //   includeList.forEach(className => {
+  //     if (classList.indexOf(className) !== -1)
+  //       flag = true;
+  //   });
+  //   return flag;
+  // }
+  // timer;
+  // @HostListener('mouseenter', ['$event'])
+  // mouseenter(evt) {
+  //   this.timer = Date.now();
+  // }
+  // timeOutConst = 1;
+  // @HostListener('mouseleave', ['$event'])
+  // mouseleave(evt) {
+  //   let label = this.getLabel(evt.target);
+  //   if (((Date.now() - this.timer) / 1000) > this.timeOutConst)
+  //     this.logger.logHover({ route: this.router.url, hoverTime: ((Date.now() - this.timer) / 1000), label: label, type: evt.target.tagName });
+  // }
   //GLOBAL LISTENER CODE ENDS HERE
 }

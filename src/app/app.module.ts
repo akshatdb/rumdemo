@@ -16,6 +16,8 @@ import { DataTableComponent } from './components/common/data-table/data-table.co
 import { LoggerService } from './services/logger.service';
 import { LogDirective } from './directives/logger.directive';
 import { HttpClientModule } from '@angular/common/http';
+import { ForbiddenCharDirective } from './directives/pattern.directive';
+import { FormErrorDirective } from './directives/error.directive';
 
 @NgModule({
   declarations: [
@@ -27,7 +29,9 @@ import { HttpClientModule } from '@angular/common/http';
     FormComponent,
     TableComponent,
     DataTableComponent,
-    LogDirective
+    LogDirective,
+    ForbiddenCharDirective,
+    FormErrorDirective
   ],
   imports: [
     BrowserModule,
