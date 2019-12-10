@@ -60,6 +60,9 @@ export class TableComponent implements OnInit {
     }
     this.form = new FormGroup(formObj);
   }
+  onSave(val){
+    console.log(val);
+  }
 
 
   //GLOBAL LISTENER CODE STARTS HERE
