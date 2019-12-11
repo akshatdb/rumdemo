@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 
 export class LogDirective {
     @Input('logData') extraData: string;
+    @Input('placeholder') placeholder;
     timeOutConst = 2;
     constructor(private el: ElementRef, private logService: LoggerService, private route: Router) { }
     @HostListener('click', ['$event']) onClick(evt) {
@@ -31,12 +32,16 @@ export class LogDirective {
         this.logService.logClick({ label: label, nocount: true });
     }
     getLabel(el) {
+        if(this.placeholder)
+          return this.placeholder;
         switch (el.nativeElement.tagName) {
             case 'INPUT':
                 if (el.nativeElement.labels[0])
                     return el.nativeElement.labels[0].innerText;
                 else if (el.nativeElement.attributes['ng-reflect-placeholder'])
                     return el.nativeElement.attributes['ng-reflect-placeholder'].nodeValue;
+                else
+                    return 'unknown';
                 break;
             case 'NGX-SELECT':
             case 'BUTTON':
@@ -45,6 +50,7 @@ export class LogDirective {
                 break;
             case 'TEXTAREA':
             case 'MAT-SELECT':
+            if(el.nativeElement.attributes['ng-reflect-placeholder'])
                 return el.nativeElement.attributes['ng-reflect-name'].nodeValue;
 
         }
