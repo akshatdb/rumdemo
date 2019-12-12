@@ -49,14 +49,12 @@ export class ChartsComponent implements OnInit {
       data: this.data,
       label: 'letter',
       value: 'frequency',
-      id: 'chart1'
     };
 
     this.model2 = {
       data: this.data,
       label: 'letter',
       value: 'frequency',
-      id: 'chart2'
     }
   }
 

@@ -9,7 +9,7 @@ import * as d3 from 'd3';
 })
 export class BarChartComponent implements OnChanges {
 
-  constructor() { }
+  constructor(private container:ElementRef) { }
 
   @ViewChild('chart', {static: false})
   private chartContainer:  ElementRef;
@@ -28,9 +28,8 @@ export class BarChartComponent implements OnChanges {
     this.labelKey = this.model.label;
     this.valueKey = this.model.value;
     this.data = this.model.data;
-    this.id = this.model.id;
-    // if(this.chartContainer)
-    //   this.createChart();
+    if(this.container)
+      this.createChart();
   }
   ngAfterViewInit(){
     if(this.model)
@@ -39,7 +38,7 @@ export class BarChartComponent implements OnChanges {
 
   private createChart(): void {
 
-    const element = document.getElementById(this.id);
+    const element = this.container.nativeElement.children[0];
     const data = this.data;
     d3.select(element).select('svg').remove();
 
