@@ -58,19 +58,20 @@ export class StackedBarChartComponent implements OnInit {
         sumList = row.map(row => 0);
       let i = 0;
       let newObj = row.map(innerRow => {
-        i++;
         let obj = {
           x: innerRow.x,
           y0: sumList[i],
           y: innerRow.y
         }
+        i++;
+        return obj;
       });
       for(let i = 0; i < row.length; i++){
-        sumList[i] = sumList[i]?0:sumList[i] + row[i];
+        sumList[i] = sumList[i]?0:sumList[i] + row[i]['y'];
       }
       return newObj;
     })
-
+    console.log(stackedData);
     const contentWidth = element.offsetWidth - this.margin.left - this.margin.right;
     const contentHeight = element.offsetHeight - this.margin.top - this.margin.bottom;
 

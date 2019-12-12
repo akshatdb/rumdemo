@@ -52,8 +52,12 @@ export class ChartsComponent implements OnInit {
     };
 
     this.model2 = {
-      data: this.data,
-      label: 'letter',
+      data: [
+        {month: 'Jan', A: 20, B: 5, C: 10},
+        {month: 'Feb', A: 25, B: 10, C: 20}
+      ],
+      stackOrder: ['A', 'B', 'C'],
+      label: 'month',
       value: 'frequency',
     }
   }
