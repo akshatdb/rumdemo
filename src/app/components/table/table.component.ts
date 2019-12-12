@@ -60,9 +60,6 @@ export class TableComponent implements OnInit {
     }
     this.form = new FormGroup(formObj);
   }
-  onSave(val){
-    console.log(val);
-  }
 
   onSave(val){
     console.log(val);

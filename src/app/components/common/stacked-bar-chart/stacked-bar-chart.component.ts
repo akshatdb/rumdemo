@@ -21,6 +21,9 @@ export class StackedBarChartComponent implements OnInit {
   stackOrder = [];
   data = [];
 
+  ngOnInit(){
+
+  }
   ngOnChanges() {
     if (!this.model) { return; }
     this.labelKey = this.model.label;
@@ -63,7 +66,7 @@ export class StackedBarChartComponent implements OnInit {
         }
       });
       for(let i = 0; i < row.length; i++){
-        sumList[i] = sumList[i]?0:sumList[i] + row[y];
+        sumList[i] = sumList[i]?0:sumList[i] + row[i];
       }
       return newObj;
     })
@@ -78,7 +81,7 @@ export class StackedBarChartComponent implements OnInit {
       .rangeRound([0, contentWidth])
       .padding(0.1)
       .domain(stackedData[0].map(d => d['x']));
-    
+
     var xAxis = d3.axisBottom(x);
 
     const y = d3

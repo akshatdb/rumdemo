@@ -42,12 +42,21 @@ export class ChartsComponent implements OnInit {
       "frequency": 0.06094
     }
   ]
-  model;
+  model1;
+  model2;
   ngOnInit() {
-    this.model = {
+    this.model1 = {
       data: this.data,
       label: 'letter',
-      value: 'frequency'
+      value: 'frequency',
+      id: 'chart1'
+    };
+
+    this.model2 = {
+      data: this.data,
+      label: 'letter',
+      value: 'frequency',
+      id: 'chart2'
     }
   }
 

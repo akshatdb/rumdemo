@@ -21,25 +21,27 @@ export class BarChartComponent implements OnChanges {
   labelKey;
   valueKey;
   data = [];
+  id = 'chart';
 
   ngOnChanges() {
     if (!this.model) { return; }
     this.labelKey = this.model.label;
     this.valueKey = this.model.value;
     this.data = this.model.data;
-    if(this.chartContainer)
-      this.createChart();
+    this.id = this.model.id;
+    // if(this.chartContainer)
+    //   this.createChart();
   }
   ngAfterViewInit(){
-    if(this.chartContainer && this.model)
+    if(this.model)
       this.createChart();
   }
-  
-  private createChart(): void {
-    d3.select('svg').remove();
 
-    const element = this.chartContainer.nativeElement;
+  private createChart(): void {
+
+    const element = document.getElementById(this.id);
     const data = this.data;
+    d3.select(element).select('svg').remove();
 
     const svg = d3.select(element).append('svg')
         .attr('width', element.offsetWidth)
@@ -75,7 +77,7 @@ export class BarChartComponent implements OnChanges {
         .attr('y', 6)
         .attr('dy', '0.71em')
         .attr('text-anchor', 'end')
-        .text('Frequency');
+        .text(this.labelKey);
 
     g.selectAll('.bar')
       .data(data)
