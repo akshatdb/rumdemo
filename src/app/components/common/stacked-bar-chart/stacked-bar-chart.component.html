@@ -1,1 +1,5 @@
-<div #chart id="chart"></div>
+<div class="chart" (window:resize)="createChart()"></div>
+<div id="tooltip" class="hidden">
+    <p><strong>Value</strong></p>
+    <p><span id="value"></span></p>
+</div>

@@ -62,4 +62,8 @@ export class ChartsComponent implements OnInit {
     }
   }
 
+  click(evt){
+    console.log(evt);
+  }
+
 }
