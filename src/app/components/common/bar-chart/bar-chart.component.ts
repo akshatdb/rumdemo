@@ -36,7 +36,7 @@ export class BarChartComponent implements OnChanges {
       this.createChart();
   }
 
-  private createChart(): void {
+  createChart(): void {
 
     const element = this.container.nativeElement.children[0];
     const data = this.data;

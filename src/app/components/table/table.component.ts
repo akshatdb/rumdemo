@@ -52,6 +52,11 @@ export class TableComponent implements OnInit {
         { name: 'fieldname', header: 'Field' },
         { name: 'noofclicks', header: 'No of clicks' },
         { name: 'route', header: 'Route' }
+      ],
+      iconList: [
+        {icon: 'save', name: 'Save', class: 'save-icon', func: (row) => {
+          console.log(row);
+        }}
       ]
     });
     let formObj = {};

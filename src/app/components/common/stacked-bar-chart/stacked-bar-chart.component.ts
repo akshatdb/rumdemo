@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef, Input, Output, EventEmitter } from '@angular/core';
 import * as d3 from 'd3';
 import { Subject, merge, combineLatest } from 'rxjs';
-import { mergeAll } from 'rxjs/operators';
+import { mergeAll, first, distinct, withLatestFrom, single } from 'rxjs/operators';
 
 @Component({
   selector: 'app-stacked-bar-chart',
@@ -51,7 +51,7 @@ export class StackedBarChartComponent implements OnInit {
       this.createChart();
   }
 
-  private createChart(): void {
+  createChart(): void {
 
     const element = this.container.nativeElement.children[0];
     d3.select(element).select('svg').remove();
@@ -142,7 +142,7 @@ export class StackedBarChartComponent implements OnInit {
     let that = this;
     svg.selectAll('.stack')
       .on('mouseenter', (d, i) => {
-        that.rectangleEvent.next({val: d, index: i, event: d3.event, hover: 'start'});
+        // that.rectangleEvent.next({val: d, index: i, event: d3.event, hover: 'start'});
       })
       .on('mousemove', (d, i) => {
         d3.select('#tooltip')
@@ -150,11 +150,11 @@ export class StackedBarChartComponent implements OnInit {
         .style('top', d3.event.pageY-10+ 'px')
         .select('#value')
         .text(that.toolTip(d[i], i));
-        d3.select("#tooltip").classed("hidden", false);
+        // d3.select("#tooltip").classed("hidden", false);
       })
       .on('mouseout', (d, i) => {
-        d3.select("#tooltip").classed("hidden", true);
-        that.rectangleEvent.next({val: d, index: i, event: d3.event, hover: 'end'});
+        // d3.select("#tooltip").classed("hidden", true);
+        // that.rectangleEvent.next({val: d, index: i, event: d3.event, hover: 'end'});
       })
       .on('click', (d, i) => {
         that.rectangleEvent.next({val: d, index: i, event: d3.event})
@@ -162,17 +162,18 @@ export class StackedBarChartComponent implements OnInit {
 
       svg.selectAll('rect')
       .on('mouseenter', (d, i) => {
-        that.stackEvent.next({val: d, index: i, event: d3.event, hover: 'start'});
+        // that.stackEvent.next({val: d, index: i, event: d3.event, hover: 'start'});
       })
       .on('mouseout', (d, i) => {
-        that.stackEvent.next({val: d, index: i, event: d3.event, hover: 'end'});
+        // that.stackEvent.next({val: d, index: i, event: d3.event, hover: 'end'});
       })
       .on('click', (d, i) => {
+        console.log(d,i);
         that.stackEvent.next({val: d, index: i, event: d3.event});
       })
 
 
-      combineLatest(that.stackEvent, that.rectangleEvent).subscribe(res => {
+      that.stackEvent.subscribe(res => {
         console.log(res);
       })
   }
