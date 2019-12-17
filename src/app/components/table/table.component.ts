@@ -54,7 +54,7 @@ export class TableComponent implements OnInit {
         { name: 'route', header: 'Route' }
       ],
       iconList: [
-        {icon: 'save', name: 'Save', class: 'save-icon', func: (row) => {
+        {icon: 'save', name: 'Save', class: 'save-icon', classFunc: (row)=>{return row['fieldname']==='Button'?'button-row':'non-button-row'},func: (row) => {
           console.log(row);
         }}
       ]
