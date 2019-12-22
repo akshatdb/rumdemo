@@ -1,12 +1,15 @@
+@import "../../../../assets/scss/variables.scss";
 .chart {
     height: inherit;
     width: inherit;
     .bar {
-        fill: steelblue;
+        fill: $main-color-light;
+        transition: fill 0.3s;
+        transition: height 0.3s;
     }
 
     .bar:hover {
-        fill: brown;
+        fill: $main-color;
     }
 
     .axis--x path {

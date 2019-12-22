@@ -83,9 +83,13 @@ export class BarChartComponent implements OnChanges {
       .enter().append('rect')
         .attr('class', 'bar')
         .attr('x', (d:any) => x(d[this.labelKey]))
+        .attr('y', contentHeight)
+        .transition().duration(1000).ease(d3.easeExp)
         .attr('y', (d:any) => y(d[this.valueKey]))
         .attr('width', x.bandwidth())
-        .attr('height', (d:any) => contentHeight - y(d[this.valueKey]));
+        .attr('height', (d:any) => contentHeight - y(d[this.valueKey]))
+        .transition().duration(1000).ease(d3.easeExp)
+        ;
   }
 
 }
