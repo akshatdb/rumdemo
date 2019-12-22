@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
-import { fromEvent, merge } from 'rxjs';
-import { timeInterval, tap, filter } from 'rxjs/operators';
+import { fromEvent, merge, Subject } from 'rxjs';
+import { timeInterval, tap, filter, take } from 'rxjs/operators';
 import { Router, NavigationEnd, NavigationStart } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import html2canvas from 'html2canvas';
+
 
 @Injectable({
   providedIn: 'root'
@@ -244,9 +246,23 @@ export class LoggerService {
     this.log('hover');
   }
 
-  log(type='default') {
-    this.info['latestPerformanceObj'] = window.performance.toJSON().timing;
-    console.log(type,this.info);
+  log(type='default', imageflag = true) {
+    if(imageflag){
+      setTimeout(() => {
+        this.captureScreen().subscribe(image => {
+          // this.info['latestCapture'] = image;
+          let form = new FormData();
+          form.append('file', image);
+          form.append('data', JSON.stringify(this.info));
+          this.http.post('http://localhost:8080', form).subscribe(res => console.log(res));
+          console.log(this.info);
+        })
+      }, 1000);
+      
+    }{
+      this.info['latestPerformanceObj'] = window.performance.toJSON().timing;
+      console.log(type,this.info);
+    }
   }
 
 
@@ -267,4 +283,33 @@ export class LoggerService {
       console.log('GEOIP failed');
     })
   }
+
+
+  captureScreen(){
+    let image: Subject<any> = new Subject();
+    html2canvas(document.body).then(canvas => {
+      let imgData = canvas.toDataURL("image/png");
+      image.next(this.dataURItoBlob(imgData));
+    });
+    return image.pipe(take(1));
+  }
+  dataURItoBlob(dataURI) {
+    // convert base64/URLEncoded data component to raw binary data held in a string
+    var byteString;
+    if (dataURI.split(',')[0].indexOf('base64') >= 0)
+        byteString = atob(dataURI.split(',')[1]);
+    else
+        byteString = unescape(dataURI.split(',')[1]);
+
+    // separate out the mime component
+    var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+
+    // write the bytes of the string to a typed array
+    var ia = new Uint8Array(byteString.length);
+    for (var i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+    }
+
+    return new Blob([ia], {type:mimeString});
+}
 }
