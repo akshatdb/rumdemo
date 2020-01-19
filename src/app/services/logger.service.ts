@@ -11,7 +11,7 @@ import html2canvas from 'html2canvas';
 })
 export class LoggerService {
 
-  constructor(private router: Router, private http:HttpClient) { }
+  constructor(private router: Router, private http: HttpClient) { }
   private info = {};
   private geoApiUrl = 'http://geoapi-test-geoapi.apps.us-east-2.starter.openshift-online.com/';
   // private timingHandler;
@@ -49,9 +49,9 @@ export class LoggerService {
     this.info['cookies'] = document.cookie;
     this.info['localStorage'] = localStorage;
     this.info['sessionStorage'] = sessionStorage;
-    this.info['device'] = this.isMobile()?'mobile':'desktop';
+    this.info['device'] = this.isMobile() ? 'mobile' : 'desktop';
     this.info['resolution'] = window.screen.width * window.devicePixelRatio + "x" + window.screen.height * window.devicePixelRatio;
-    this.info['operatingSystem'] = this.isMobile()?this.getMobileOperatingSystem():navigator.platform;
+    this.info['operatingSystem'] = this.isMobile() ? this.getMobileOperatingSystem() : navigator.platform;
     // alert('device:'+this.info['device']+',os:'+this.info['operatingSystem'] + ',resolution:'+this.info['resolution']);
     var findIP = new Promise(r => { var w = window, a = new (w['RTCPeerConnection'] || w['mozRTCPeerConnection'] || w['webkitRTCPeerConnection'])({ iceServers: [] }), b = () => { }; a.createDataChannel(""); a.createOffer(c => a.setLocalDescription(c, b, b), b); a.onicecandidate = c => { try { c.candidate.candidate.match(/([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/g).forEach(r) } catch (e) { } } })
     /*Usage example*/
@@ -121,28 +121,28 @@ export class LoggerService {
   }
 
   getMobileOperatingSystem() {
-  var userAgent = navigator.userAgent || navigator.vendor || window['opera'];
+    var userAgent = navigator.userAgent || navigator.vendor || window['opera'];
 
-      // Windows Phone must come first because its UA also contains "Android"
+    // Windows Phone must come first because its UA also contains "Android"
     if (/windows phone/i.test(userAgent)) {
-        return "Windows Phone";
+      return "Windows Phone";
     }
 
     if (/android/i.test(userAgent)) {
-        return "Android";
+      return "Android";
     }
 
     // iOS detection from: http://stackoverflow.com/a/9039885/177710
     if (/iPad|iPhone|iPod/.test(userAgent) && !window['MSStream']) {
-        return "iOS";
+      return "iOS";
     }
 
     return "unknown";
-}
+  }
 
-  isMobile(){
-    let userAgent = navigator.userAgent||navigator.vendor||window['opera'];
-    if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(userAgent))
+  isMobile() {
+    let userAgent = navigator.userAgent || navigator.vendor || window['opera'];
+    if (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(userAgent))
       return true;
     return false;
   }
@@ -188,6 +188,8 @@ export class LoggerService {
     this.router.events.subscribe(route => {
       if (route instanceof NavigationStart) {
         this.info['lastRouteChange'] = { from: this.router.url, to: route.url };
+        this.info['lastStartingRoute'] = this.router.url;
+        this.info['lastEndingRoute'] = route.url;
       }
     })
   }
@@ -228,14 +230,45 @@ export class LoggerService {
         this.info['clickOnRoute'] = {};
       if (!this.info['clickOnRoute'][currentPath])
         this.info['clickOnRoute'][currentPath] = {};
-      this.info['clickOnRoute'][currentPath][labelName] = this.info['clickOnRoute'][currentPath][labelName] ? this.info['clickOnRoute'][currentPath][labelName] : 0;
+      //CHANGED PART  
+      if (this.info['clickOnRoute'][currentPath][labelName]) {
+        this.info['clickOnRoute'][currentPath][labelName] = {
+          'type': labelName,
+          'count': this.info['clickOnRoute'][currentPath][labelName].count,
+          'lastValue': el.value
+        }
+      }
+      else {
+        this.info['clickOnRoute'][currentPath][labelName] = {
+          'type': labelName,
+          'count': 0,
+          'lastValue': el.value
+        }
+      }
+      //REMOVE THIS
+      // this.info['clickOnRoute'][currentPath][labelName] = this.info['clickOnRoute'][currentPath][labelName] ? this.info['clickOnRoute'][currentPath][labelName] : 0;
     }
     else {
       if (!this.info['clickOnRoute'])
         this.info['clickOnRoute'] = {};
       if (!this.info['clickOnRoute'][currentPath])
         this.info['clickOnRoute'][currentPath] = {};
-      this.info['clickOnRoute'][currentPath][labelName] = (this.info['clickOnRoute'][currentPath][labelName] ? this.info['clickOnRoute'][currentPath][labelName] : 0) + 1;
+      if (this.info['clickOnRoute'][currentPath][labelName]) {
+        this.info['clickOnRoute'][currentPath][labelName] = {
+          'type': labelName,
+          'count': this.info['clickOnRoute'][currentPath][labelName].count + 1,
+          'lastValue': el.value
+        }
+      }
+      else {
+        this.info['clickOnRoute'][currentPath][labelName] = {
+          'type': labelName,
+          'count': 1,
+          'lastValue': el.value
+        }
+      }
+      //REMOVE THIS
+      //this.info['clickOnRoute'][currentPath][labelName] = (this.info['clickOnRoute'][currentPath][labelName] ? this.info['clickOnRoute'][currentPath][labelName] : 0) + 1;
       this.info['lastClick'] = el;
       this.log('click');
     }
@@ -246,8 +279,8 @@ export class LoggerService {
     this.log('hover');
   }
 
-  log(type='default', imageflag = true) {
-    if(imageflag){
+  log(type = 'default', imageflag = true) {
+    if (imageflag) {
       setTimeout(() => {
         this.captureScreen().subscribe(image => {
           // this.info['latestCapture'] = image;
@@ -258,19 +291,19 @@ export class LoggerService {
           console.log(this.info);
         })
       }, 1000);
-      
-    }{
+
+    } {
       this.info['latestPerformanceObj'] = window.performance.toJSON().timing;
-      console.log(type,this.info);
+      console.log(type, this.info);
     }
   }
 
 
   //API Calls
 
-  getPublicIP(){
-    this.http.get(this.geoApiUrl, {responseType: 'json'}).subscribe((res:any) => {
-      if(res.data){
+  getPublicIP() {
+    this.http.get(this.geoApiUrl, { responseType: 'json' }).subscribe((res: any) => {
+      if (res.data) {
         this.info['publicIp'] = res.data.ip;
         this.info['ipbasedLocationData'] = {
           'city': res.data.location.city,
@@ -279,13 +312,13 @@ export class LoggerService {
           'accuracy': res.data.location.area
         }
       }
-    }, (error:any)=>{
+    }, (error: any) => {
       console.log('GEOIP failed');
     })
   }
 
 
-  captureScreen(){
+  captureScreen() {
     let image: Subject<any> = new Subject();
     html2canvas(document.body).then(canvas => {
       let imgData = canvas.toDataURL("image/png");
@@ -297,9 +330,9 @@ export class LoggerService {
     // convert base64/URLEncoded data component to raw binary data held in a string
     var byteString;
     if (dataURI.split(',')[0].indexOf('base64') >= 0)
-        byteString = atob(dataURI.split(',')[1]);
+      byteString = atob(dataURI.split(',')[1]);
     else
-        byteString = unescape(dataURI.split(',')[1]);
+      byteString = unescape(dataURI.split(',')[1]);
 
     // separate out the mime component
     var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
@@ -307,9 +340,9 @@ export class LoggerService {
     // write the bytes of the string to a typed array
     var ia = new Uint8Array(byteString.length);
     for (var i = 0; i < byteString.length; i++) {
-        ia[i] = byteString.charCodeAt(i);
+      ia[i] = byteString.charCodeAt(i);
     }
 
-    return new Blob([ia], {type:mimeString});
-}
+    return new Blob([ia], { type: mimeString });
+  }
 }

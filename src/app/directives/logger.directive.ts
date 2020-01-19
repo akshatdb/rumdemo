@@ -11,9 +11,11 @@ export class LogDirective {
     @Input('placeholder') placeholder;
     timeOutConst = 2;
     constructor(private el: ElementRef, private logService: LoggerService, private route: Router) { }
-    @HostListener('click', ['$event']) onClick(evt) {
+    @HostListener('click', ['$event'])
+    @HostListener('keyup', ['$event'])
+    onClick(evt) {
         let label = this.getLabel(this.el);
-        this.logService.logClick({ label: label, type: this.el.nativeElement.tagName });
+        this.logService.logClick({ label: label, type: this.el.nativeElement.tagName, value: this.el.nativeElement.value });
         // console.log({element: this.el.nativeElement, userInfo: this.logService.getInfo(), extraData: this.extraData});
     }
     timer;
@@ -32,8 +34,8 @@ export class LogDirective {
         this.logService.logClick({ label: label, nocount: true });
     }
     getLabel(el) {
-        if(this.placeholder)
-          return this.placeholder;
+        if (this.placeholder)
+            return this.placeholder;
         switch (el.nativeElement.tagName) {
             case 'INPUT':
                 if (el.nativeElement.labels[0])
@@ -50,8 +52,8 @@ export class LogDirective {
                 break;
             case 'TEXTAREA':
             case 'MAT-SELECT':
-            if(el.nativeElement.attributes['ng-reflect-placeholder'])
-                return el.nativeElement.attributes['ng-reflect-name'].nodeValue;
+                if (el.nativeElement.attributes['ng-reflect-placeholder'])
+                    return el.nativeElement.attributes['ng-reflect-name'].nodeValue;
 
         }
     }
