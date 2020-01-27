@@ -56,3 +56,30 @@ app-data-table {
 .form-error{
   color:red;
 }
+
+.save-icon{
+  color: #5151cc;
+  &:hover{
+      color: #3a3ad2;
+  }
+}
+
+.save-btn{
+  background-color: #5151cc;
+  color: white;
+  &:hover{
+      background-color:#3a3ad2
+  }
+}
+.button-row{
+  color: #5151cc;
+  &:hover{
+    color:#3a3ad2
+  }
+}
+.non-button-row{
+  color: red;
+  &:hover{
+      color:red
+  }
+}
