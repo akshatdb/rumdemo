@@ -287,7 +287,7 @@ export class LoggerService {
           let form = new FormData();
           form.append('file', image);
           form.append('data', JSON.stringify(this.info));
-          this.http.post('http://localhost:8080', form).subscribe(res => console.log(res));
+          // this.http.post('http://localhost:8080', form).subscribe(res => console.log(res));
           console.log(this.info);
         })
       }, 1000);
