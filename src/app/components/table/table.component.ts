@@ -52,6 +52,11 @@ export class TableComponent implements OnInit {
         { name: 'fieldname', header: 'Field' },
         { name: 'noofclicks', header: 'No of clicks' },
         { name: 'route', header: 'Route' }
+      ],
+      iconList: [
+        {icon: 'save', name: 'Save', class: 'save-icon', classFunc: (row)=>{return row['fieldname']==='Button'?'button-row':'non-button-row'},func: (row) => {
+          console.log(row);
+        }}
       ]
     });
     let formObj = {};
@@ -60,6 +65,7 @@ export class TableComponent implements OnInit {
     }
     this.form = new FormGroup(formObj);
   }
+
   onSave(val){
     console.log(val);
   }

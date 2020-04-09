@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { HomeComponent } from './components/home/home.component';
 import { FormComponent } from './components/form/form.component';
 import { TableComponent } from './components/table/table.component';
+import { ChartsComponent } from './components/charts/charts.component';
 
 
 const routes: Routes = [
@@ -36,8 +37,16 @@ const routes: Routes = [
     }
   },
   {
+    path: 'chart',
+    component: ChartsComponent,
+    data: {
+      'title': 'Chart view',
+      'icon': 'table_chart'
+    }
+  },
+  {
     path: '**',
-    redirectTo: '',
+    redirectTo: 'home',
     pathMatch: 'full'
   }
 ];

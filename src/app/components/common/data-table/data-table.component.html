@@ -1,10 +1,26 @@
 <table mat-table [dataSource]="tableModel.dataSource" class="mat-elevation-z8">
 
-    <ng-container *ngFor="let column of tableModel.columnDefs" [matColumnDef]="column.name">
-      <th mat-header-cell *matHeaderCellDef> {{column.header}} </th>
-      <td mat-cell *matCellDef="let element"> {{element[column.name]}} </td>
-    </ng-container>
-  
-    <tr mat-header-row *matHeaderRowDef="tableModel.columns"></tr>
-    <tr mat-row *matRowDef="let row; columns: tableModel.columns;"></tr>
-  </table>
+  <ng-container *ngFor="let column of tableModel.columnDefs" [matColumnDef]="column.name">
+    <th mat-header-cell *matHeaderCellDef> {{column.header}} </th>
+    <td mat-cell *matCellDef="let element"> {{element[column.name]}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="action">
+    <th mat-header-cell *matHeaderCellDef>Action</th>
+    <td mat-cell *matCellDef="let element">
+      <ng-container *ngFor="let act of tableModel.buttonList">
+        <button mat-raised-button [ngStyle]="act.styleFunc?act.styleFunc(element):{}" [ngClass]="act.classFunc?act.classFunc(element):act.class" (click)="act.func(element)">
+          <mat-icon>{{act.icon}}</mat-icon> {{act.name}}
+        </button>
+      </ng-container>
+      <ng-container *ngFor="let act of tableModel.iconList">
+        <button mat-icon-button [ngStyle]="act.styleFunc?act.styleFunc(element):{}" [ngClass]="act.classFunc?act.classFunc(element):act.class" (click)="act.func(element)">
+          <mat-icon [matTooltip]="act.name">{{act.icon}}</mat-icon>
+        </button>
+      </ng-container>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="tableModel.columns"></tr>
+  <tr mat-row *matRowDef="let row; columns: tableModel.columns;"></tr>
+</table>
