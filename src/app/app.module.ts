@@ -18,10 +18,9 @@ import { LogDirective } from './directives/logger.directive';
 import { HttpClientModule } from '@angular/common/http';
 import { ForbiddenCharDirective } from './directives/pattern.directive';
 import { FormErrorDirective } from './directives/error.directive';
-import { RilTableLibModule } from 'ril-table-lib';
 import { ChartsComponent } from './components/charts/charts.component';
-import { BarChartComponent } from './components/common/bar-chart/bar-chart.component';
-import { StackedBarChartComponent } from './components/common/stacked-bar-chart/stacked-bar-chart.component';
+// import { BarChartComponent } from './components/common/bar-chart/bar-chart.component';
+// import { StackedBarChartComponent } from './components/common/stacked-bar-chart/stacked-bar-chart.component';
 
 @NgModule({
   declarations: [
@@ -33,16 +32,15 @@ import { StackedBarChartComponent } from './components/common/stacked-bar-chart/
     FormComponent,
     TableComponent,
     DataTableComponent,
-    BarChartComponent,
+    // BarChartComponent,
     LogDirective,
     ForbiddenCharDirective,
     FormErrorDirective,
     ChartsComponent,
-    StackedBarChartComponent
+    // StackedBarChartComponent
   ],
   imports: [
     BrowserModule,
-    RilTableLibModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     MatcompsModule,
